@@ -1,8 +1,14 @@
+CSC480 - Open AI Project
+Team: Solo-Dolo
+Author: Ian Sweeney
+
 Installation:
+    
     testy_gym is the only file required to run my algorithms.
     The only module that must be installed is the gym module.
 
 Operation:
+    
     NOTE - The algorithm can be used for any of the discrete control
     environments although I can only guarantee successful training in the
     CartPole and MountainClimber environments.
