@@ -72,13 +72,13 @@ class RememberBot:
 
 
 def train_bots(env, is_render=False, is_print=False):
-    POPULATION_SIZE = 2000
-    CULL_PERCENTAGE = 0.1
+    POPULATION_SIZE = 1000
+    CULL_PERCENTAGE = 0.05
     CULL_SIZE = int(CULL_PERCENTAGE * POPULATION_SIZE)
-    MUTATION_RATE = 0.01
+    MUTATION_RATE = 0.1
     NUM_GENERATIONS = 20
 
-    NUM_TRIALS = 4
+    NUM_TRIALS = 2
 
     input_size = len(env.observation_space.high)
     output_size = env.action_space.n
@@ -95,7 +95,7 @@ def train_bots(env, is_render=False, is_print=False):
         for bot in generation:
             score = 0
             for trial in range(NUM_TRIALS):
-                if trial == 0 and i == 0:
+                if trial == 0 and generation.index(bot) % 100 == 0:
                     score += run_sim(env, bot,
                                      is_render=is_render, is_print=is_print)
                 else:
@@ -135,7 +135,7 @@ def train_bots(env, is_render=False, is_print=False):
 
 
 def mutate(gen, chance):
-    for p in gen:
+    for p in gen[1:]:
         w = p.weights
         new_w = []
         for col in w:
@@ -247,33 +247,37 @@ def truncate_weights(weights):
 
 
 def class_demo():
-    num_episodes = 10
+    num_episodes = 5
 
-    # best PoleCart:
-    env = gym.make('CartPole-v1')
-    weights = [[0.76, -25.65, -10.97, -19.10, 7.88],
-               [-2.45, 3.52, 2.60, 13.23, 10.21]]
-    bot = create_bot(env, weights)
-    for ep in range(num_episodes):
-        run_sim(env, bot, is_render=True, is_print=True)
+    while True:
+        # best PoleCart:
+        env = gym.make('CartPole-v1')
+        weights = [[0.76, -25.65, -10.97, -19.10, 7.88],
+                   [-2.45, 3.52, 2.60, 13.23, 10.21]]
+        bot = create_bot(env, weights)
+        for ep in range(num_episodes):
+            run_sim(env, bot, is_render=True, is_print=True)
+        env.close()
 
-    # best MointainCar:
-    env = gym.make('MountainCar-v0')
-    weights = [[7.55, 3.92, -0.61, 10.64, 14.38, -6.75, 1.43],
-               [-13.52, -6.86, -3.85, 2.73, -11.69, -3.35, -24.24],
-               [-0.38, -10.18, 1.03, -7.21, -0.85, 12.99, 2.55]]
-    bot = create_bot(env, weights)
-    for ep in range(num_episodes):
-        run_sim(env, bot, is_render=True, is_print=True)
+        # best MointainCar:
+        env = gym.make('MountainCar-v0')
+        weights = [[-0.48, -29.32, -5.05],
+                   [2.19, -2.61, -12.23],
+                   [-0.29, 18.69, 6.44]]
+        bot = create_bot(env, weights)
+        for ep in range(num_episodes):
+            run_sim(env, bot, is_render=True, is_print=True)
+        env.close()
 
-    # best Acrobot:
-    env = gym.make('Acrobot-v1')
-    weights = [[7.55, 3.92, -0.61, 10.64, 14.38, -6.75, 1.43],
-               [-13.52, -6.86, -3.85, 2.73, -11.69, -3.35, -24.24],
-               [-0.38, -10.18, 1.03, -7.21, -0.85, 12.99, 2.55]]
-    bot = create_bot(env, weights)
-    for ep in range(num_episodes):
-        run_sim(env, bot, is_render=True, is_print=True)
+        # best Acrobot:
+        env = gym.make('Acrobot-v1')
+        weights = [[7.55, 3.92, -0.61, 10.64, 14.38, -6.75, 1.43],
+                   [-13.52, -6.86, -3.85, 2.73, -11.69, -3.35, -24.24],
+                   [-0.38, -10.18, 1.03, -7.21, -0.85, 12.99, 2.55]]
+        bot = create_bot(env, weights)
+        for ep in range(num_episodes):
+            run_sim(env, bot, is_render=True, is_print=True)
+        env.close()
 
 
 def run_training():
@@ -287,12 +291,12 @@ def run_training():
     # uncomment the next two. Also place your weights as a 2d array in the
     # weights variable below.
 
-    best_bot = train_bots(env, is_render=False, is_print=False)
+    best_bot = train_bots(env, is_render=True, is_print=True)
 
     # best MountainCar:
-    # weights = [[3.57, 10.03, -0.41],
-    #            [0.02, 30.48, 4.05],
-    #            [7.52, -2.43, 19.49]]
+    # weights = [[-0.48, -29.32, -5.05],
+    #            [2.19, -2.61, -12.23],
+    #            [-0.29, 18.69, 6.44]]
     # best_bot = create_bot(env, weights)
 
     sum_reward = 0
@@ -301,6 +305,7 @@ def run_training():
     for episode in range(num_episodes):
         reward = run_sim(env, best_bot, is_render=True, is_print=True)
         sum_reward += reward
+    env.close()
 
     sum_reward = sum_reward / num_episodes
     print("bot performance:", str(sum_reward))
@@ -311,5 +316,5 @@ def run_training():
 
 
 if __name__ == "__main__":
-    # class_demo()
-    run_training()
+    class_demo()
+    # run_training()
