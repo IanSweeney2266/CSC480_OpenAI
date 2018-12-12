@@ -1,6 +1,7 @@
 CSC480 - Open AI Project
-Team: Solo-Dolo
-Author: Ian Sweeney
+    
+    Team: Solo-Dolo
+    Author: Ian Sweeney
 
 Installation:
     
